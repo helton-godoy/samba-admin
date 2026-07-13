@@ -1,0 +1,4 @@
+#!/bin/sh
+# Preserva deliberadamente dados, configuracao, logs e a conta de servico.
+set -eu
+printf '%s\n' 'dados e configuracao do samba-admin foram preservados para recuperacao e auditoria.'

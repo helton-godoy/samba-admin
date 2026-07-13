@@ -1,0 +1,27 @@
+#!/bin/sh
+# Cria e valida a identidade de servico antes da extracao dos arquivos.
+set -eu
+
+group=sambaadmin
+user=sambaadmin
+
+if ! /usr/sbin/pw groupshow "$group" >/dev/null 2>&1; then
+  /usr/sbin/pw groupadd -n "$group"
+fi
+
+group_record=$(/usr/sbin/pw groupshow "$group")
+group_id=$(printf '%s\n' "$group_record" | /usr/bin/cut -d: -f3)
+
+if /usr/sbin/pw usershow "$user" >/dev/null 2>&1; then
+  user_record=$(/usr/sbin/pw usershow "$user")
+  user_group=$(printf '%s\n' "$user_record" | /usr/bin/cut -d: -f4)
+  user_home=$(printf '%s\n' "$user_record" | /usr/bin/cut -d: -f9)
+  user_shell=$(printf '%s\n' "$user_record" | /usr/bin/cut -d: -f10)
+  user_groups=$(/usr/bin/id -Gn "$user")
+  if [ "$user_group" != "$group_id" ] || [ "$user_home" != /nonexistent ] || [ "$user_shell" != /usr/sbin/nologin ] || [ "$user_groups" != "$group" ]; then
+    printf '%s\n' 'a conta sambaadmin existente nao atende ao perfil restrito; instalacao recusada' >&2
+    exit 1
+  fi
+else
+  /usr/sbin/pw useradd -n "$user" -g "$group" -d /nonexistent -s /usr/sbin/nologin -c 'Servico da API Samba Admin'
+fi

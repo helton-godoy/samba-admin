@@ -1,0 +1,10 @@
+Samba Admin Suite foi instalado com os dois servicos rc.d desabilitados.
+
+1. Copie api.env.sample, agent.env.sample e shared.env.sample para arquivos sem
+   o sufixo .sample em /usr/local/etc/samba-admin/.
+2. Substitua todo placeholder REPLACE_WITH_ pelo processo de segredos aprovado.
+3. Mantenha samba_admin_agent_enable=NO ate configurar peer UID, HMAC, nonce,
+   executor readonly-freebsd e capabilities explicitamente homologadas.
+4. Habilite os servicos apenas apos revisar docs/packaging-freebsd.md.
+
+O pacote nao ingressa no Active Directory e nao habilita mutacoes reais.

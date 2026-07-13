@@ -1,0 +1,15 @@
+name: samba-admin
+version: "@VERSION@"
+origin: "@ORIGIN@"
+comment: Console segura de administracao Samba para FreeBSD
+maintainer: "@MAINTAINER@"
+www: "@WWW@"
+prefix: /usr/local
+licenselogic: single
+licenses: [BSD2CLAUSE]
+arch: "@ARCH@"
+categories: [sysutils, net]
+deps: {
+  sqlite3: { origin: databases/sqlite3, version: "*" }
+  libargon2: { origin: security/libargon2, version: "*" }
+}

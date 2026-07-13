@@ -1,0 +1,22 @@
+[global]
+  workgroup = EBSERHNET
+  realm = EBSERHNET.EBSERH.GOV.BR
+  security = ADS
+  server min protocol = SMB2_10
+  map to guest = Never
+  server signing = mandatory
+
+  idmap config * : backend = tdb
+  idmap config * : range = 1000000-1999999
+  idmap config EBSERHNET : backend = rid
+  idmap config EBSERHNET : range = 2000000-2999999
+
+[Assistencial]
+  comment = Documentos operacionais de apoio assistencial
+  path = /srv/dados/assistencial
+  browseable = yes
+  read only = no
+  guest ok = no
+  server smb encrypt = desired
+  valid users = @EBSERHNET\GDL-HUUFCAT-ASSISTENCIAL
+  vfs objects = acl_xattr recycle full_audit

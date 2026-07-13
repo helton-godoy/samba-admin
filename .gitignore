@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+artifacts/
+backend/bin/
+frontend/dist/
+
+# Generated files
+frontend/tsconfig.app.tsbuildinfo
+frontend/tsconfig.node.tsbuildinfo
+frontend/vite.config.d.ts
+frontend/vite.config.js
+
+# Test artifacts
+frontend/test-results/
+frontend/test-results-real/
+frontend/playwright-report/
+frontend/playwright-report-real/
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+
+# Tool configs
+.agents/
+.codex/
+.kombai/
+.trunk/
+
+# Editor/IDE
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

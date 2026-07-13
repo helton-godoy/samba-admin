@@ -1,0 +1,933 @@
+openapi: 3.1.0
+info:
+  title: API do Console Samba para FreeBSD
+  version: 1.1.0
+  description: API administrativa versionada para o console Samba. Operações mutáveis retornam tarefas persistentes e operações de alto risco exigem aprovação segregada.
+  x-deprecation-policy: Aliases permanecem por no mínimo duas versões menores e retornam Deprecation, Sunset e Link para o recurso canônico.
+servers:
+  - url: http://localhost:8080
+security:
+  - sessionCookie: []
+tags:
+  - name: Health
+  - name: System
+  - name: Samba
+  - name: ACL
+  - name: Domain
+  - name: Printing
+  - name: Operations
+paths:
+  /healthz:
+    get:
+      security: []
+      tags: [Health]
+      operationId: health
+      responses:
+        '200': { $ref: '#/components/responses/HealthResponse' }
+  /readyz:
+    get:
+      security: []
+      tags: [Health]
+      operationId: readiness
+      responses:
+        '200': { $ref: '#/components/responses/HealthResponse' }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/login:
+    post:
+      security: []
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/LoginResponse' }
+        '401': { $ref: '#/components/responses/ProblemResponse' }
+        '429': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/mfa/verify:
+    post:
+      security: []
+      operationId: verifyMfaLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MfaVerificationRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/LoginResponse' }
+        '401': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/session/renew:
+    post:
+      operationId: renewSession
+      responses:
+        '200': { $ref: '#/components/responses/LoginResponse' }
+        '401': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      responses:
+        '204': { description: Sessão encerrada }
+  /api/v1/auth/me:
+    get:
+      operationId: currentUser
+      responses:
+        '200': { $ref: '#/components/responses/UserResponse' }
+        '401': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/mfa/totp/enroll:
+    post:
+      operationId: beginTotpEnrollment
+      responses:
+        '201':
+          description: Segredo pendente de confirmação; a resposta nunca é registrada em auditoria.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TotpEnrollment' }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/mfa/totp/confirm:
+    post:
+      operationId: confirmTotpEnrollment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TotpCodeRequest' }
+      responses:
+        '200':
+          description: MFA ativado; códigos de recuperação aparecem somente nesta resposta.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecoveryCodesResponse' }
+        '422': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/auth/mfa/recovery-codes:
+    post:
+      operationId: rotateRecoveryCodes
+      responses:
+        '200':
+          description: Códigos substituídos; a resposta nunca é registrada em auditoria.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RecoveryCodesResponse' }
+  /api/v1/auth/mfa/totp/revoke:
+    post:
+      operationId: revokeTotp
+      responses:
+        '204': { description: MFA revogado quando a política permitir }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/system:
+    get:
+      tags: [System]
+      operationId: getSystem
+      responses:
+        '200':
+          description: Informações do sistema
+          headers:
+            ETag: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SystemInfo' }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/samba:
+    get:
+      tags: [Samba]
+      operationId: getSamba
+      responses:
+        '200':
+          description: Inventário estruturado e somente leitura do Samba
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SambaInfo' }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/cups:
+    get:
+      tags: [Printing]
+      operationId: getCups
+      responses:
+        '200':
+          description: Inventário estruturado e somente leitura do CUPS
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CupsInfo' }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/capabilities:
+    get:
+      tags: [System]
+      operationId: listCapabilities
+      responses:
+        '200':
+          description: Matriz de capacidades
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Capability' } }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/filesystems:
+    get:
+      tags: [System]
+      operationId: listFilesystems
+      responses:
+        '200':
+          description: Sistemas de arquivos
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/FileSystem' } }
+        '503': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/mounts:
+    get:
+      tags: [System]
+      operationId: listMounts
+      responses:
+        '200':
+          description: Alias estruturado de sistemas de arquivos montados
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/FileSystem' } }
+  /api/v1/shares:
+    get:
+      tags: [Samba]
+      operationId: listShares
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Filter'
+      responses:
+        '200':
+          description: Compartilhamentos
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Share' } }
+    post:
+      tags: [Samba]
+      operationId: createShare
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Share' }
+      responses:
+        '201':
+          description: Compartilhamento registrado e tarefa criada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ShareMutationResponse' }
+        '403': { $ref: '#/components/responses/ProblemResponse' }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+        '422': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/shares/preview:
+    post:
+      tags: [Samba]
+      operationId: previewShare
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ShareDraft' }
+      responses:
+        '200':
+          description: Prévia validada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SharePreview' }
+        '422': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/acls:
+    get:
+      tags: [ACL]
+      operationId: listAcls
+      responses:
+        '200':
+          description: ACLs
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Ace' } }
+  /api/v1/acl:
+    get:
+      deprecated: true
+      tags: [ACL]
+      operationId: listAclsLegacy
+      responses:
+        '200':
+          description: Alias legado
+          headers:
+            Deprecation: { schema: { type: string, const: 'true' } }
+            Sunset: { schema: { type: string, format: date-time } }
+            Link: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Ace' } }
+  /api/v1/identities:
+    get:
+      tags: [ACL]
+      operationId: listIdentities
+      responses:
+        '200':
+          description: Identidades
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Principal' } }
+  /api/v1/principals:
+    get:
+      deprecated: true
+      tags: [ACL]
+      operationId: listPrincipalsLegacy
+      responses:
+        '200':
+          description: Alias legado
+          headers:
+            Deprecation: { schema: { type: string, const: 'true' } }
+            Sunset: { schema: { type: string, format: date-time } }
+            Link: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Principal' } }
+  /api/v1/acl/effective:
+    post:
+      tags: [ACL]
+      operationId: calculateEffectiveAcl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [principal]
+              properties: { principal: { type: string } }
+      responses:
+        '200':
+          description: Permissões efetivas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EffectiveAcl' }
+  /api/v1/acl/conversion/simulate:
+    post:
+      tags: [ACL]
+      operationId: simulateAclConversion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filesystemId, target]
+              properties:
+                filesystemId: { type: string }
+                target: { type: string, enum: [posix, nfsv4] }
+      responses:
+        '200':
+          description: Relatório de simulação
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AclConversionReport' }
+        '404': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/domain:
+    get:
+      tags: [Domain]
+      operationId: getDomain
+      responses:
+        '200':
+          description: Estado de membro do domínio
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DomainState' }
+  /api/v1/domain/test:
+    post:
+      tags: [Domain]
+      operationId: testDomain
+      responses:
+        '202':
+          description: Diagnóstico aceito
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DomainTestResult' }
+  /api/v1/samba-profiles:
+    get:
+      tags: [Samba]
+      operationId: listSambaProfiles
+      responses:
+        '200':
+          description: Perfis mutuamente exclusivos
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/SambaProfileInfo' } }
+  /api/v1/printers:
+    get:
+      tags: [Printing]
+      operationId: listPrinters
+      responses:
+        '200': { description: Impressoras, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Printer' } } } } }
+  /api/v1/print-drivers:
+    get:
+      tags: [Printing]
+      operationId: listPrintDrivers
+      responses:
+        '200': { description: Drivers, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/PrintDriver' } } } } }
+  /api/v1/dfs:
+    get:
+      operationId: listDfs
+      responses:
+        '200': { description: DFS Namespace, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/DfsRoot' } } } } }
+  /api/v1/quotas:
+    get:
+      operationId: listQuotas
+      responses:
+        '200': { description: Cotas, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Quota' } } } } }
+  /api/v1/logging:
+    get:
+      operationId: getLogging
+      responses:
+        '200': { description: Configuração de logs, content: { application/json: { schema: { $ref: '#/components/schemas/LoggingState' } } } }
+  /api/v1/audit:
+    get:
+      operationId: listAudit
+      responses:
+        '200': { description: Eventos de auditoria, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/AuditEvent' } } } } }
+  /api/v1/services:
+    get:
+      operationId: listServices
+      responses:
+        '200': { description: Serviços, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ServiceInfo' } } } } }
+  /api/v1/services/{id}/action:
+    post:
+      operationId: serviceAction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties: { action: { type: string, enum: [start, stop, restart, reload, health-check] } }
+      responses:
+        '202':
+          description: Operação aceita
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceActionResponse' }
+  /api/v1/configuration/file:
+    get:
+      operationId: getConfigurationFile
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Arquivo autorizado, content: { application/json: { schema: { $ref: '#/components/schemas/ConfigurationFile' } } } }
+        '403': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/configuration/validate:
+    post:
+      operationId: validateConfiguration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path, content]
+              properties:
+                path: { type: string }
+                content: { type: string, maxLength: 1048576 }
+      responses:
+        '200': { description: Validação, content: { application/json: { schema: { $ref: '#/components/schemas/ConfigurationValidation' } } } }
+        '422': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/jobs:
+    get:
+      tags: [Operations]
+      operationId: listJobs
+      responses:
+        '200': { description: Tarefas, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Job' } } } } }
+  /api/v1/jobs/{id}/cancel:
+    post:
+      tags: [Operations]
+      operationId: cancelJob
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Solicitação de cancelamento aceita
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [jobId, status]
+                properties:
+                  jobId: { type: string }
+                  status: { type: string, const: cancellation-requested }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/jobs/{id}/rollback:
+    post:
+      tags: [Operations]
+      operationId: rollbackJob
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202': { description: Rollback aceito, content: { application/json: { schema: { $ref: '#/components/schemas/RollbackResponse' } } } }
+        '404': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/events:
+    get:
+      tags: [Operations]
+      operationId: streamEvents
+      parameters:
+        - name: Last-Event-ID
+          in: header
+          required: false
+          schema: { type: string, maxLength: 64 }
+      responses:
+        '200':
+          description: Fluxo Server-Sent Events
+          content:
+            text/event-stream:
+              schema: { type: string }
+  /api/v1/change-requests:
+    get:
+      tags: [Operations]
+      operationId: listChangeRequests
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: { type: string, enum: [pending_approval, approved, rejected, executing, completed, failed, cancelled, rolled_back, expired] }
+      responses:
+        '200':
+          description: Solicitações de mudança
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/ChangeRequest' } }
+    post:
+      tags: [Operations]
+      operationId: createChangeRequest
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangeRequestInput' }
+      responses:
+        '201':
+          description: Solicitação criada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChangeRequest' }
+        '422': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/change-requests/{id}:
+    get:
+      tags: [Operations]
+      operationId: getChangeRequest
+      parameters:
+        - $ref: '#/components/parameters/ChangeRequestID'
+      responses:
+        '200':
+          description: Solicitação de mudança
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChangeRequest' }
+        '404': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/change-requests/{id}/approve:
+    post:
+      tags: [Operations]
+      operationId: approveChangeRequest
+      parameters:
+        - $ref: '#/components/parameters/ChangeRequestID'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangeDecisionInput' }
+      responses:
+        '200':
+          description: Solicitação aprovada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChangeRequest' }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/change-requests/{id}/reject:
+    post:
+      tags: [Operations]
+      operationId: rejectChangeRequest
+      parameters:
+        - $ref: '#/components/parameters/ChangeRequestID'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangeDecisionInput' }
+      responses:
+        '200':
+          description: Solicitação rejeitada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChangeRequest' }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/change-requests/{id}/execute:
+    post:
+      tags: [Operations]
+      operationId: executeApprovedChangeRequest
+      parameters:
+        - $ref: '#/components/parameters/ChangeRequestID'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Mudança aprovada enviada como tarefa
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Job' }
+        '409': { $ref: '#/components/responses/ProblemResponse' }
+  /api/v1/backups:
+    get:
+      operationId: listBackups
+      responses:
+        '200': { description: Backups, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Backup' } } } } }
+  /api/v1/rollback:
+    post:
+      operationId: executeRollback
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [backupId]
+              properties: { backupId: { type: string }, reason: { type: string } }
+      responses:
+        '202': { description: Tarefa de rollback criada, content: { application/json: { schema: { $ref: '#/components/schemas/Job' } } } }
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: samba_admin_session
+  parameters:
+    Page: { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+    PageSize: { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
+    Sort: { name: sort, in: query, schema: { type: string } }
+    Filter: { name: filter, in: query, schema: { type: string } }
+    IdempotencyKey: { name: Idempotency-Key, in: header, required: true, schema: { type: string, minLength: 8, maxLength: 128 } }
+    IfMatch: { name: If-Match, in: header, schema: { type: string } }
+    ChangeRequestID: { name: id, in: path, required: true, schema: { type: string, minLength: 8, maxLength: 128 } }
+  responses:
+    HealthResponse:
+      description: Estado do processo
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Health' }
+    UserResponse:
+      description: Usuário autenticado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/User' }
+    LoginResponse:
+      description: Sessão autenticada ou desafio MFA pendente
+      headers:
+        X-CSRF-Token: { schema: { type: string }, description: Presente somente quando a sessão foi criada ou renovada. }
+        Set-Cookie: { schema: { type: string }, description: Cookie HttpOnly da sessão. }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/LoginResponse' }
+    ProblemResponse:
+      description: Erro padronizado
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    Health:
+      type: object
+      required: [status, timestamp]
+      properties: { status: { type: string }, timestamp: { type: string, format: date-time } }
+    Problem:
+      type: object
+      required: [type, title, status, detail, correlationId]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        correlationId: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            required: [field, code, message]
+            properties: { field: { type: string }, code: { type: string }, message: { type: string } }
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties: { username: { type: string }, password: { type: string, format: password } }
+    LoginResponse:
+      type: object
+      required: [mfaRequired, expiresAt]
+      properties:
+        user: { $ref: '#/components/schemas/User' }
+        csrfToken: { type: string, writeOnly: true }
+        expiresAt: { type: string, format: date-time }
+        mfaRequired: { type: boolean }
+        mfaChallengeId: { type: string, writeOnly: true }
+    MfaVerificationRequest:
+      type: object
+      additionalProperties: false
+      required: [challengeId, code]
+      properties:
+        challengeId: { type: string, minLength: 32, maxLength: 128 }
+        code: { type: string, minLength: 6, maxLength: 32, writeOnly: true }
+    TotpEnrollment:
+      type: object
+      additionalProperties: false
+      required: [otpauthUri, manualSecret]
+      properties:
+        otpauthUri: { type: string, writeOnly: true }
+        manualSecret: { type: string, writeOnly: true }
+    TotpCodeRequest:
+      type: object
+      additionalProperties: false
+      required: [code]
+      properties:
+        code: { type: string, minLength: 6, maxLength: 6, writeOnly: true }
+    RecoveryCodesResponse:
+      type: object
+      additionalProperties: false
+      required: [codes]
+      properties:
+        codes:
+          type: array
+          minItems: 10
+          maxItems: 10
+          items: { type: string, writeOnly: true }
+    User:
+      type: object
+      required: [id, username, displayName, roles, breakGlass, mfaEnabled]
+      properties:
+        id: { type: string }
+        username: { type: string }
+        displayName: { type: string }
+        roles: { type: array, items: { type: string } }
+        breakGlass: { type: boolean }
+        mfaEnabled: { type: boolean }
+    SystemInfo:
+      type: object
+      additionalProperties: true
+      required: [hostname, fqdn, freebsdVersion, sambaVersion, sambaPackage, sambaOrigin, profile, health, domainJoined, timeSync, dnsHealth, cpuPercent, memoryPercent, diskPercent, smbSessions, openFiles, sharesCount, printQueues, logForwarding]
+      properties:
+        hostname: { type: string }
+        fqdn: { type: string }
+        freebsdVersion: { type: string }
+        sambaVersion: { type: string }
+        sambaPackage: { type: string }
+        sambaOrigin: { type: string }
+        profile: { type: string, enum: [standalone, domain-member, ad-dc, additional-dc] }
+        health: { type: string }
+        domainJoined: { type: boolean }
+        domainName: { type: string, nullable: true }
+        preferredDc: { type: string, nullable: true }
+        timeSync: { type: string }
+        dnsHealth: { type: string }
+        cpuPercent: { type: number }
+        memoryPercent: { type: number }
+        diskPercent: { type: number }
+        smbSessions: { type: integer }
+        openFiles: { type: integer }
+        sharesCount: { type: integer }
+        printQueues: { type: integer }
+        logForwarding: { type: string }
+    Capability:
+      type: object
+      required: [id, feature, state, scope, evidence]
+      properties:
+        id: { type: string, pattern: '^[a-z][a-z0-9_.-]{2,100}$' }
+        feature: { type: string }
+        state: { type: string, enum: [supported, supported_with_restrictions, experimental, unavailable, not_verified, suportado, suportado_com_restricoes, restrito, nao_verificado, indisponivel] }
+        scope: { type: string }
+        evidence: { type: string }
+    FileSystem:
+      type: object
+      additionalProperties: true
+      required: [id, device, mountPoint, type, sizeGiB, usedGiB, writable, mountOptions, aclModel, extendedAttributes, userQuota, groupQuota, fstabPersistent, associatedShares]
+      properties:
+        id: { type: string }
+        device: { type: string }
+        mountPoint: { type: string }
+        type: { type: string }
+        sizeGiB: { type: number }
+        usedGiB: { type: number }
+        writable: { type: boolean }
+        mountOptions: { type: array, items: { type: string } }
+        aclModel: { type: string }
+        extendedAttributes: { type: boolean }
+        userQuota: { type: boolean }
+        groupQuota: { type: boolean }
+        fstabPersistent: { type: boolean }
+        associatedShares: { type: array, items: { type: string } }
+    SambaInfo:
+      type: object
+      additionalProperties: false
+      required: [version, package, origin, binaries, configurationPath, profile, shares, sessions, openFiles, vfsModules, testparmAvailable, fullAuditAvailable, dfsAvailable, printingAvailable, packageBuildOptions]
+      properties:
+        version: { type: string }
+        package: { type: string }
+        origin: { type: string }
+        binaries: { type: array, items: { type: string } }
+        configurationPath: { type: string }
+        profile: { type: string }
+        effectiveConfig: { type: string }
+        shares: { type: array, items: { type: string } }
+        sessions: { type: integer, minimum: 0 }
+        openFiles: { type: integer, minimum: 0 }
+        vfsModules: { type: array, items: { type: string } }
+        testparmAvailable: { type: boolean }
+        fullAuditAvailable: { type: boolean }
+        dfsAvailable: { type: boolean }
+        printingAvailable: { type: boolean }
+        packageBuildOptions: { type: array, items: { type: string } }
+    CupsInfo:
+      type: object
+      additionalProperties: false
+      required: [version, service, printers, backends, ppds, errors]
+      properties:
+        version: { type: string }
+        service: { type: string }
+        printers: { type: array, items: { $ref: '#/components/schemas/CupsPrinterInfo' } }
+        backends: { type: array, items: { type: string } }
+        ppds: { type: array, items: { type: string } }
+        errors: { type: array, items: { type: string } }
+    Share:
+      type: object
+      additionalProperties: false
+      required: [id, name, description, path, enabled, readOnly, guestAccess, allowedPrincipals, deniedPrincipals, encryption, signing, auditProfile, recycleBin, dfs, vfsModules, maxConnections, aclModel]
+      properties:
+        id: { type: string }
+        name: { type: string, pattern: '^[A-Za-z0-9._$-]{1,80}$' }
+        description: { type: string, maxLength: 255 }
+        path: { type: string }
+        enabled: { type: boolean }
+        readOnly: { type: boolean }
+        guestAccess: { type: boolean }
+        allowedPrincipals: { type: array, items: { type: string } }
+        deniedPrincipals: { type: array, items: { type: string } }
+        encryption: { type: string, enum: [disabled, desired, required] }
+        signing: { type: string, enum: [default, mandatory] }
+        auditProfile: { type: string, enum: [off, minimum, security, changes, complete] }
+        recycleBin: { type: boolean }
+        dfs: { type: boolean }
+        vfsModules: { type: array, items: { type: string } }
+        maxConnections: { type: integer, minimum: 1, maximum: 10000 }
+        aclModel: { type: string, enum: [posix, nfsv4, none] }
+    ShareDraft:
+      allOf:
+        - $ref: '#/components/schemas/Share'
+    SharePreview:
+      type: object
+      additionalProperties: true
+    ShareMutationResponse:
+      type: object
+      required: [share, job]
+      properties: { share: { $ref: '#/components/schemas/Share' }, job: { $ref: '#/components/schemas/Job' } }
+    Ace: { type: object, additionalProperties: true }
+    Principal: { type: object, additionalProperties: true }
+    EffectiveAcl: { type: object, additionalProperties: true }
+    AclConversionReport: { type: object, additionalProperties: true }
+    DomainState: { type: object, additionalProperties: true }
+    DomainTestResult: { type: object, additionalProperties: true }
+    SambaProfileInfo: { type: object, additionalProperties: true }
+    CupsPrinterInfo:
+      type: object
+      additionalProperties: false
+      required: [id, name, uri, model, driver, shared, paused, jobs, windows11Validated]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        uri: { type: string }
+        model: { type: string }
+        driver: { type: string }
+        shared: { type: boolean }
+        paused: { type: boolean }
+        jobs: { type: integer, minimum: 0 }
+        windows11Validated: { type: boolean }
+    Printer: { type: object, additionalProperties: true }
+    PrintDriver: { type: object, additionalProperties: true }
+    DfsRoot: { type: object, additionalProperties: true }
+    Quota: { type: object, additionalProperties: true }
+    LoggingState: { type: object, additionalProperties: true }
+    AuditEvent: { type: object, additionalProperties: true }
+    ServiceInfo: { type: object, additionalProperties: true }
+    ServiceActionResponse: { type: object, additionalProperties: true }
+    ConfigurationFile: { type: object, additionalProperties: true }
+    ConfigurationValidation: { type: object, additionalProperties: true }
+    Job:
+      type: object
+      additionalProperties: true
+      required: [id, requestedBy, requestedAt, operation, status, progress, summary, cancellable, rollbackAvailable]
+      properties:
+        id: { type: string }
+        requestedBy: { type: string }
+        requestedAt: { type: string, format: date-time }
+        operation: { type: string }
+        status: { type: string }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        summary: { type: string }
+        error: { type: string, nullable: true }
+        cancellable: { type: boolean }
+        rollbackAvailable: { type: boolean }
+    RollbackResponse: { type: object, additionalProperties: true }
+    Backup: { type: object, additionalProperties: true }
+    ChangeRequestInput:
+      type: object
+      additionalProperties: false
+      required: [operation, resource, justification, impact, rollbackPlan, payload]
+      properties:
+        operation: { type: string, minLength: 3, maxLength: 128 }
+        resource: { type: string, minLength: 3, maxLength: 255 }
+        justification: { type: string, minLength: 10, maxLength: 4000 }
+        maintenanceStart: { type: string, format: date-time, nullable: true }
+        maintenanceEnd: { type: string, format: date-time, nullable: true }
+        impact: { type: string, minLength: 10, maxLength: 4000 }
+        rollbackPlan: { type: string, minLength: 10, maxLength: 4000 }
+        payload: { type: object, additionalProperties: true }
+    ChangeDecisionInput:
+      type: object
+      additionalProperties: false
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 5, maxLength: 4000 }
+    ChangeRequest:
+      type: object
+      additionalProperties: false
+      required: [id, operation, resource, risk, status, requestedBy, requestedAt, justification, impact, rollbackPlan]
+      properties:
+        id: { type: string }
+        operation: { type: string }
+        resource: { type: string }
+        risk: { type: string, enum: [read, low, medium, high, destructive, emergency] }
+        status: { type: string, enum: [pending_approval, approved, rejected, executing, completed, failed, cancelled, rolled_back, expired] }
+        requestedBy: { type: string }
+        requestedAt: { type: string, format: date-time }
+        justification: { type: string }
+        maintenanceStart: { type: string, format: date-time, nullable: true }
+        maintenanceEnd: { type: string, format: date-time, nullable: true }
+        impact: { type: string }
+        rollbackPlan: { type: string }
+        requiredCapability: { type: string }
+        jobId: { type: string }
+        approvedBy: { type: string }
+        approvedAt: { type: string, format: date-time, nullable: true }
+        decisionReason: { type: string }
+        expiresAt: { type: string, format: date-time, nullable: true }

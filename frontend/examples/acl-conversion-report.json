@@ -1,0 +1,12 @@
+{
+  "filesystem": "/var/spool/cups",
+  "from": "posix",
+  "to": "nfsv4",
+  "requiresMaintenance": true,
+  "requiresUnmount": true,
+  "scannedObjects": 184203,
+  "preserved": 173910,
+  "approximated": 9911,
+  "notRepresentable": 382,
+  "warning": "A reversão restaura o inventário exportado, mas não garante equivalência semântica perfeita."
+}

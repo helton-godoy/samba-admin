@@ -1,0 +1,13 @@
+#!/bin/sh
+# Interrompe processos antes que o pkg remova seus executaveis.
+set -eu
+
+for service_name in samba_admin_api samba_admin_agent; do
+  if /usr/sbin/service "$service_name" onestatus >/dev/null 2>&1; then
+    /usr/sbin/service "$service_name" onestop
+  fi
+  if /usr/sbin/service "$service_name" onestatus >/dev/null 2>&1; then
+    printf 'nao foi possivel interromper o servico %s antes da remocao\n' "$service_name" >&2
+    exit 1
+  fi
+done

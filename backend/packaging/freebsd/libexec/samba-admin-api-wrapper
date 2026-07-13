@@ -1,0 +1,21 @@
+#!/bin/sh
+# Configuracoes pertencem a root e nao permitem escrita por sambaadmin.
+set -eu
+unset CDPATH ENV BASH_ENV
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+umask 077
+
+shared_env=/usr/local/etc/samba-admin/shared.env
+api_env=/usr/local/etc/samba-admin/api.env
+
+[ -r "$shared_env" ] || { printf '%s\n' 'shared.env ausente' >&2; exit 78; }
+[ -r "$api_env" ] || { printf '%s\n' 'api.env ausente' >&2; exit 78; }
+
+set -a
+. "$shared_env"
+. "$api_env"
+set +a
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+exec /usr/local/sbin/samba-admin-api

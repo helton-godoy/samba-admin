@@ -1,0 +1,5 @@
+rules:
+  operation-summary: off
+  operation-4xx-response: off
+  info-contact: off
+  info-license: off

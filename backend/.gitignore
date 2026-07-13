@@ -1,0 +1,2 @@
+# Ferramenta auxiliar deve ser recompilada nativamente no FreeBSD.
+bin/samba-admin-fixture-collector

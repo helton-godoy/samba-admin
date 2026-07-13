@@ -1,0 +1,13 @@
+--- /usr/local/etc/smb4.conf.anterior
++++ /usr/local/etc/smb4.conf.proposto
+@@
++[Pesquisa]
++  comment = Dados de pesquisa institucional
++  path = /srv/dados/pesquisa
++  browseable = yes
++  read only = no
++  guest ok = no
++  server smb encrypt = desired
++  server signing = mandatory
++  valid users = @EBSERHNET\GLO-SEC-HUUFCAT-FS-ADM
++  vfs objects = acl_xattr recycle full_audit

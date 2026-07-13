@@ -1,0 +1,55 @@
+#!/bin/sh
+# PROVIDE: samba_admin_api
+# REQUIRE: NETWORKING LOGIN samba_admin_agent
+# KEYWORD: shutdown
+#
+# A API executa sem root. O agente privilegiado permanece desabilitado,
+# salvo quando o operador define samba_admin_agent_enable=YES explicitamente.
+. /etc/rc.subr
+
+name="samba_admin_api"
+rcvar="samba_admin_api_enable"
+command="/usr/sbin/daemon"
+procname="/usr/local/sbin/samba-admin-api"
+pidfile="/var/run/${name}.pid"
+required_files="/usr/local/libexec/samba-admin-api-wrapper"
+
+load_rc_config "$name"
+
+: ${samba_admin_api_enable:="NO"}
+: ${samba_admin_api_env_file:="/usr/local/etc/samba-admin/api.env"}
+: ${samba_admin_shared_env_file:="/usr/local/etc/samba-admin/shared.env"}
+: ${samba_admin_api_log_file:="/var/log/samba-admin/api.log"}
+: ${samba_admin_api_run_dir:="/var/run/samba-admin"}
+
+start_precmd="samba_admin_api_prestart"
+command_args="-f -p ${pidfile} -o ${samba_admin_api_log_file} -u sambaadmin /usr/local/libexec/samba-admin-api-wrapper"
+
+samba_admin_api_prestart()
+{
+  if [ ! -r "${samba_admin_api_env_file}" ] || [ ! -r "${samba_admin_shared_env_file}" ]; then
+    err 1 "arquivo de ambiente da API/compartilhado ausente; configure os exemplos com segredos seguros"
+  fi
+  if /usr/bin/grep -q 'REPLACE_WITH_' "${samba_admin_api_env_file}" "${samba_admin_shared_env_file}"; then
+    err 1 "placeholder de segredo encontrado; inicializacao recusada"
+  fi
+	if [ -L "${samba_admin_api_run_dir}" ] || [ ! -d "${samba_admin_api_run_dir}" ]; then
+		err 1 "diretorio do socket ausente ou invalido; reinstale o package antes de iniciar a API"
+	fi
+	run_policy=$(/usr/bin/stat -f '%Su:%Sg:%p' "${samba_admin_api_run_dir}")
+	if [ "${run_policy}" != 'root:sambaadmin:42750' ]; then
+		err 1 "politica do diretorio do socket invalida: ${run_policy}"
+	fi
+	if [ -L /var/log/samba-admin ] || [ ! -d /var/log/samba-admin ]; then
+		err 1 "diretorio de logs ausente ou invalido; reinstale o package antes de iniciar a API"
+	fi
+	log_policy=$(/usr/bin/stat -f '%Su:%Sg:%p' /var/log/samba-admin)
+	if [ "${log_policy}" != 'root:sambaadmin:40750' ]; then
+		err 1 "politica do diretorio de logs invalida: ${log_policy}"
+	fi
+	/usr/bin/touch "${samba_admin_api_log_file}"
+  /usr/sbin/chown sambaadmin:sambaadmin "${samba_admin_api_log_file}"
+  /bin/chmod 0640 "${samba_admin_api_log_file}"
+}
+
+run_rc_command "$1"

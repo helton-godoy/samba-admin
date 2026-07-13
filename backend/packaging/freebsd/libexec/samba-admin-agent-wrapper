@@ -1,0 +1,21 @@
+#!/bin/sh
+# Este wrapper executa como root somente porque o agente e a fronteira privilegiada.
+set -eu
+unset CDPATH ENV BASH_ENV
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+umask 077
+
+shared_env=/usr/local/etc/samba-admin/shared.env
+agent_env=/usr/local/etc/samba-admin/agent.env
+
+[ -r "$shared_env" ] || { printf '%s\n' 'shared.env ausente' >&2; exit 78; }
+[ -r "$agent_env" ] || { printf '%s\n' 'agent.env ausente' >&2; exit 78; }
+
+set -a
+. "$shared_env"
+. "$agent_env"
+set +a
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+exec /usr/local/sbin/samba-admin-agent

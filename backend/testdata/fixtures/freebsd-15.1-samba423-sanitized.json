@@ -1,0 +1,671 @@
+{
+  "schemaVersion": 1,
+  "collectedAt": "2026-07-12T18:06:21.494004979Z",
+  "source": "freebsd-readonly",
+  "sanitized": true,
+  "system": {
+    "hostname": "{HOSTNAME}",
+    "fqdn": "{HOSTNAME}",
+    "freebsdVersion": "15.1-RELEASE-p1",
+    "sambaVersion": "4.23.8",
+    "sambaPackage": "samba423-4.23.8_1",
+    "sambaOrigin": "FreeBSD Ports / pkg",
+    "profile": "standalone",
+    "health": "atencao",
+    "domainJoined": false,
+    "timeSync": "suportado",
+    "dnsHealth": "suportado",
+    "cpuPercent": 0,
+    "memoryPercent": 0,
+    "diskPercent": 16.3,
+    "smbSessions": 0,
+    "openFiles": 0,
+    "sharesCount": 0,
+    "printQueues": 0,
+    "logForwarding": "nao_verificado",
+    "architecture": "amd64",
+    "uptime": "3:06PM  up 41 mins, 2 users, load averages: 0.16, 0.23, 0.25",
+    "cpuCount": 2,
+    "memoryBytes": 4254564352,
+    "loadAverage": [
+      0.16,
+      0.23,
+      0.25
+    ],
+    "interfaces": [
+      "vtnet0",
+      "lo0"
+    ],
+    "dnsServers": [
+      "{IP}"
+    ],
+    "ntpStatus": "suportado",
+    "timezone": "-03"
+  },
+  "filesystems": [
+    {
+      "id": "fs-dev-vtbd0s1a",
+      "device": "/dev/vtbd0s1a",
+      "mountPoint": "/",
+      "type": "ufs",
+      "sizeGiB": 23.23330307006836,
+      "usedGiB": 3.7887115478515625,
+      "writable": true,
+      "mountOptions": [
+        "rw"
+      ],
+      "aclModel": "none",
+      "extendedAttributes": false,
+      "userQuota": false,
+      "groupQuota": false,
+      "fstabPersistent": true,
+      "associatedShares": [],
+      "fstabEntry": "/dev/vtbd0s1a\t/\t\tufs\trw\t1\t1"
+    }
+  ],
+  "samba": {
+    "version": "4.23.8",
+    "package": "samba423-4.23.8_1",
+    "origin": "FreeBSD Ports / pkg",
+    "binaries": [
+      "/usr/local/sbin/smbd"
+    ],
+    "configurationPath": "/usr/local/etc/smb4.conf",
+    "profile": "",
+    "shares": null,
+    "sessions": 0,
+    "openFiles": 0,
+    "vfsModules": null,
+    "testparmAvailable": false,
+    "fullAuditAvailable": false,
+    "dfsAvailable": false,
+    "printingAvailable": false,
+    "packageBuildOptions": [
+      "ADS            : on",
+      "AD_DC          : on",
+      "AVAHI          : on",
+      "BUNDLED_CMOCKA : off",
+      "BUNDLED_TALLOC : off",
+      "BUNDLED_TDB    : off",
+      "BUNDLED_TEVENT : off",
+      "CLUSTER        : off",
+      "CUPS           : off",
+      "DEVELOPER      : off",
+      "DOCS           : on",
+      "FAM            : on",
+      "FRUIT          : on",
+      "GLUSTERFS      : off",
+      "GPGME          : off",
+      "GSSAPI_BUILTIN : on",
+      "GSSAPI_MIT     : off",
+      "LDAP           : on",
+      "MANPAGES       : on",
+      "MDNSRESPONDER  : off",
+      "MEMORY_DEBUG   : off",
+      "PROFILE        : on",
+      "PYTHON3        : on",
+      "QUOTAS         : on",
+      "SYSLOG         : on",
+      "TEST           : off",
+      "UTMP           : on",
+      "ZEROCONF_NONE  : off"
+    ]
+  },
+  "domain": {
+    "joined": false,
+    "dnsDomain": "",
+    "realm": "",
+    "netbios": "",
+    "computerOu": "",
+    "preferredDcs": null,
+    "site": "",
+    "idmapStrategy": "",
+    "uidRange": "",
+    "gidRange": "",
+    "tests": [
+      {
+        "name": "Samba configuration",
+        "state": "indisponivel",
+        "details": "testparm não está disponível."
+      }
+    ]
+  },
+  "cups": {
+    "version": "cups-2.4.19_1",
+    "service": "valid",
+    "printers": [],
+    "backends": [],
+    "ppds": [],
+    "errors": []
+  },
+  "capabilities": [
+    {
+      "id": "system.inspect",
+      "feature": "Inventário do sistema",
+      "state": "suportado",
+      "scope": "FreeBSD",
+      "evidence": "sysctl, mount, df e hostname estão disponíveis."
+    },
+    {
+      "id": "filesystem.read",
+      "feature": "Inventário de sistemas de arquivos",
+      "state": "suportado",
+      "scope": "FreeBSD/UFS",
+      "evidence": "mount -p, df -k e /etc/fstab somente leitura."
+    },
+    {
+      "id": "acl.nfsv4.read",
+      "feature": "Leitura de ACL NFSv4",
+      "state": "nao_verificado",
+      "scope": "UFS2",
+      "evidence": "Exige fixture de getfacl e homologação em UFS2."
+    },
+    {
+      "id": "acl.nfsv4.write",
+      "feature": "Escrita de ACL NFSv4",
+      "state": "indisponivel",
+      "scope": "UFS2",
+      "evidence": "Bloqueada por política nesta release."
+    },
+    {
+      "id": "samba.inspect",
+      "feature": "Inventário Samba",
+      "state": "suportado",
+      "scope": "Samba",
+      "evidence": "Versão, pacote e configuração são consultados por comandos fixos somente leitura."
+    },
+    {
+      "id": "samba.testparm",
+      "feature": "Validação Samba testparm",
+      "state": "indisponivel",
+      "scope": "Samba",
+      "evidence": "Disponibilidade do binário testparm e validação somente leitura."
+    },
+    {
+      "id": "domain.member.diagnose",
+      "feature": "Diagnóstico de membro AD",
+      "state": "nao_verificado",
+      "scope": "Samba member server",
+      "evidence": "Somente perfil Samba, DNS configurado e ping do winbind são consultados sem credenciais; SRV, Kerberos, LDAP e SMB permanecem pendentes."
+    },
+    {
+      "id": "domain.member.join",
+      "feature": "Ingresso como membro AD",
+      "state": "indisponivel",
+      "scope": "Samba member server",
+      "evidence": "Feature flag de escrita permanece desabilitada."
+    },
+    {
+      "id": "samba.ad_dc",
+      "feature": "Samba AD DC",
+      "state": "nao_verificado",
+      "scope": "Módulo separado",
+      "evidence": "Opções de pacote não substituem homologação de AD DC."
+    },
+    {
+      "id": "cups.inspect",
+      "feature": "Inventário CUPS",
+      "state": "suportado",
+      "scope": "CUPS",
+      "evidence": "cupsd -t e lpstat somente leitura."
+    },
+    {
+      "id": "quota.ufs.read",
+      "feature": "Leitura de quotas UFS",
+      "state": "nao_verificado",
+      "scope": "UFS",
+      "evidence": "Exige ferramenta e opções de quota verificadas."
+    },
+    {
+      "id": "quota.ufs.write",
+      "feature": "Escrita de quotas UFS",
+      "state": "indisponivel",
+      "scope": "UFS",
+      "evidence": "Bloqueada por política nesta release."
+    },
+    {
+      "id": "syslog.tls",
+      "feature": "Syslog remoto TLS",
+      "state": "nao_verificado",
+      "scope": "SIEM",
+      "evidence": "Requer agente ou daemon TLS homologado."
+    }
+  ],
+  "commands": [
+    {
+      "executable": "/bin/hostname",
+      "arguments": null,
+      "stdout": "{HOSTNAME}\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/sysctl",
+      "arguments": [
+        "-n",
+        "kern.osrelease"
+      ],
+      "stdout": "15.1-RELEASE-p1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/sysctl",
+      "arguments": [
+        "-n",
+        "hw.machine"
+      ],
+      "stdout": "amd64\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/sysctl",
+      "arguments": [
+        "-n",
+        "hw.ncpu"
+      ],
+      "stdout": "2\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/sysctl",
+      "arguments": [
+        "-n",
+        "hw.physmem"
+      ],
+      "stdout": "4254564352\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/mount",
+      "arguments": [
+        "-p"
+      ],
+      "stdout": "/dev/vtbd0s1a\t\t/\t\t\tufs\trw\t\t1 1\ndevfs\t\t\t{PATH_2}\t\t\tdevfs\trw\t\t0 0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/df",
+      "arguments": [
+        "-k"
+      ],
+      "stdout": "Filesystem    1024-blocks    Used    Avail Capacity  Mounted on\n/dev/vtbd0s1a    24361884 3972752 18440184    18%    /\ndevfs                   1       0        1     0%    {PATH_2}\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/cat",
+      "arguments": [
+        "/etc/fstab"
+      ],
+      "stdout": "# Device\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/vtbd0s1a\t/\t\tufs\trw\t1\t1\n/dev/vtbd0s1b\tnone\t\tswap\tsw\t0\t0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/smbd",
+      "arguments": [
+        "-V"
+      ],
+      "stdout": "Version 4.23.8\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "query",
+        "%n-%v",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "info",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\nName           : samba423\nVersion        : 4.23.8_1\nInstalled on   : Sun Jul 12 {IPV6} 2026 -03\nOrigin         : net{PATH_3}\nArchitecture   : FreeBSD:15:amd64\nPrefix         : /usr/local\nCategories     : net\nLicenses       : GPLv3+\nMaintainer     : samba@{DOMAIN}\nWWW            : https://{DOMAIN}{PATH_4}/\nComment        : Free SMB{PATH_5} and AD{PATH_6} server and client for Unix\nOptions        :\n\tADS            : on\n\tAD_DC          : on\n\tAVAHI          : on\n\tBUNDLED_CMOCKA : off\n\tBUNDLED_TALLOC : off\n\tBUNDLED_TDB    : off\n\tBUNDLED_TEVENT : off\n\tCLUSTER        : off\n\tCUPS           : off\n\tDEVELOPER      : off\n\tDOCS           : on\n\tFAM            : on\n\tFRUIT          : on\n\tGLUSTERFS      : off\n\tGPGME          : off\n\tGSSAPI_BUILTIN : on\n\tGSSAPI_MIT     : off\n\tLDAP           : on\n\tMANPAGES       : on\n\tMDNSRESPONDER  : off\n\tMEMORY_DEBUG   : off\n\tPROFILE        : on\n\tPYTHON3        : on\n\tQUOTAS         : on\n\tSYSLOG         : on\n\tTEST           : off\n\tUTMP           : on\n\tZEROCONF_NONE  : off\nShared Libs required:\n\t{DOMAIN}.13\n\t{DOMAIN}.3\n\t{DOMAIN}.3\n\t{DOMAIN}.7\n\t{DOMAIN}.5\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.30\n\t{DOMAIN}.76\n\t{DOMAIN}.76\n\t{DOMAIN}.4\n\t{DOMAIN}.2\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.9\n\t{DOMAIN}.6\n\t{DOMAIN}.6\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.1.0\n\t{DOMAIN}.8\n\t{DOMAIN}.1\n\t{DOMAIN}.2\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.3\n\t{DOMAIN}.9\n\t{DOMAIN}.6\nShared Libs provided:\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\nAnnotations    :\n\tFreeBSD_version: 1500068\n\tbuild_timestamp: 2026-07-12T04:58:19+0000\n\tbuilt_by       : poudriere-git-3.4.8\n\tcpe            : cpe:2.3:a:samba:samba:4.23.8:::::freebsd15:x64:1\n\tport_checkout_unclean: no\n\tport_git_hash  : e9e40e40c5d926e4d17c156665b69e8073cc863b\n\tports_top_checkout_unclean: no\n\tports_top_git_hash: 35f6f54f830de15627094c9b70107c1b637c3ce5\n\trepo_type      : binary\n\trepository     : FreeBSD-ports\nFlat size      : 90.8MiB\nDescription    :\nSamba4 is an attempt to implement an Active Directory compatible Domain\nController.\n\nIn short, you can join a WinNT, Win2000, WinXP or Win 2003 - 2016 member\nserver to a Samba4 domain, and it will behave much as it does in AD,\nincluding Kerberos domain logins where applicable.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--shares"
+      ],
+      "stdout": "\nService      pid     Machine       Connected at                     Encryption   Signing     \n---------------------------------------------------------------------------------------------\n\n",
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--locks"
+      ],
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n{PATH_7}/{DOMAIN} not initialised\nThis is normal if an SMB client has never connected to your server.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    },
+    {
+      "executable": "/sbin/ifconfig",
+      "arguments": [
+        "-l"
+      ],
+      "stdout": "vtnet0 lo0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/hostname",
+      "arguments": [
+        "-f"
+      ],
+      "stdout": "{HOSTNAME}\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/bin/ntpq",
+      "arguments": [
+        "-pn"
+      ],
+      "stdout": "     remote           refid      st t when poll reach   delay   offset  jitter\n==============================================================================\n {DOMAIN}. .POOL.          16 p    -   64    0    0.000   +0.000   0.000\n {DOMAIN}. .POOL.          16 p    -   64    0    0.000   +0.000   0.000\n#{IP} {IP}     3 u   76   64   77   13.329  -234.29  76.290\n#{IP}    {IP}    2 u   77   64   77   52.331  -279.35  84.387\n+{IP} {IP}     2 u   78   64   77   19.083  -228.92  75.240\n+{IP}   .GPS.            1 u   79   64   77   14.088  -229.10  74.880\n*{IP}   .GPS.            1 u   80   64   77   13.589  -228.94  74.907\n+{IP}   {IP}    2 u   81   64   77   10.989  -228.21  76.715\n-{IP} .LRTE.           1 u   84   64   77   20.370  -272.77  85.248\n#{IP}  {IP}  3 u   89   64   37   13.380  -222.69  67.745\n#{IP}  .PPS.            1 u   84   64   77  220.921  -370.58 119.534\n+{IP}   .ONBR.           1 u   85   64   77   13.484  -273.86  84.594\n#{IP} .GPS.            1 u   88   64   77   60.787  -223.53  76.913\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/cat",
+      "arguments": [
+        "/etc/resolv.conf"
+      ],
+      "stdout": "# Generated by resolvconf\nnameserver {IP}\n\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "query",
+        "%n-%v",
+        "cups"
+      ],
+      "stdout": "cups-2.4.19_1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/cupsd",
+      "arguments": [
+        "-t"
+      ],
+      "stdout": "\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/lpstat",
+      "arguments": [
+        "-p"
+      ],
+      "stderr": "lpstat: Scheduler is not running.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/lpstat: exit status 1"
+    },
+    {
+      "executable": "/usr/local/bin/lpstat",
+      "arguments": [
+        "-v"
+      ],
+      "stderr": "lpstat: Scheduler is not running.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/lpstat: exit status 1"
+    },
+    {
+      "executable": "/usr/bin/uptime",
+      "arguments": null,
+      "stdout": " 3:06PM  up 41 mins, 2 users, load averages: 0.16, 0.23, 0.25\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/sysctl",
+      "arguments": [
+        "-n",
+        "vm.loadavg"
+      ],
+      "stdout": "{ 0.16 0.23 0.25 }\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/cat",
+      "arguments": [
+        "/etc/resolv.conf"
+      ],
+      "stdout": "# Generated by resolvconf\nnameserver {IP}\n\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/bin/ntpq",
+      "arguments": [
+        "-pn"
+      ],
+      "stdout": "     remote           refid      st t when poll reach   delay   offset  jitter\n==============================================================================\n {DOMAIN}. .POOL.          16 p    -   64    0    0.000   +0.000   0.000\n {DOMAIN}. .POOL.          16 p    -   64    0    0.000   +0.000   0.000\n#{IP} {IP}     3 u   76   64   77   13.329  -234.29  76.290\n#{IP}    {IP}    2 u   77   64   77   52.331  -279.35  84.387\n+{IP} {IP}     2 u   78   64   77   19.083  -228.92  75.240\n+{IP}   .GPS.            1 u   79   64   77   14.088  -229.10  74.880\n*{IP}   .GPS.            1 u   80   64   77   13.589  -228.94  74.907\n+{IP}   {IP}    2 u   81   64   77   10.989  -228.21  76.715\n-{IP} .LRTE.           1 u   84   64   77   20.370  -272.77  85.248\n#{IP}  {IP}  3 u   89   64   37   13.380  -222.69  67.745\n#{IP}  .PPS.            1 u   84   64   77  220.921  -370.58 119.534\n+{IP}   .ONBR.           1 u   85   64   77   13.484  -273.86  84.594\n#{IP} .GPS.            1 u   88   64   77   60.787  -223.53  76.913\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/date",
+      "arguments": [
+        "+%Z"
+      ],
+      "stdout": "-03\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/sbin/mount",
+      "arguments": [
+        "-p"
+      ],
+      "stdout": "/dev/vtbd0s1a\t\t/\t\t\tufs\trw\t\t1 1\ndevfs\t\t\t{PATH_2}\t\t\tdevfs\trw\t\t0 0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/df",
+      "arguments": [
+        "-k"
+      ],
+      "stdout": "Filesystem    1024-blocks    Used    Avail Capacity  Mounted on\n/dev/vtbd0s1a    24361884 3972752 18440184    18%    /\ndevfs                   1       0        1     0%    {PATH_2}\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/cat",
+      "arguments": [
+        "/etc/fstab"
+      ],
+      "stdout": "# Device\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/vtbd0s1a\t/\t\tufs\trw\t1\t1\n/dev/vtbd0s1b\tnone\t\tswap\tsw\t0\t0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/smbd",
+      "arguments": [
+        "-V"
+      ],
+      "stdout": "Version 4.23.8\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "query",
+        "%n-%v",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "info",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\nName           : samba423\nVersion        : 4.23.8_1\nInstalled on   : Sun Jul 12 {IPV6} 2026 -03\nOrigin         : net{PATH_3}\nArchitecture   : FreeBSD:15:amd64\nPrefix         : /usr/local\nCategories     : net\nLicenses       : GPLv3+\nMaintainer     : samba@{DOMAIN}\nWWW            : https://{DOMAIN}{PATH_4}/\nComment        : Free SMB{PATH_5} and AD{PATH_6} server and client for Unix\nOptions        :\n\tADS            : on\n\tAD_DC          : on\n\tAVAHI          : on\n\tBUNDLED_CMOCKA : off\n\tBUNDLED_TALLOC : off\n\tBUNDLED_TDB    : off\n\tBUNDLED_TEVENT : off\n\tCLUSTER        : off\n\tCUPS           : off\n\tDEVELOPER      : off\n\tDOCS           : on\n\tFAM            : on\n\tFRUIT          : on\n\tGLUSTERFS      : off\n\tGPGME          : off\n\tGSSAPI_BUILTIN : on\n\tGSSAPI_MIT     : off\n\tLDAP           : on\n\tMANPAGES       : on\n\tMDNSRESPONDER  : off\n\tMEMORY_DEBUG   : off\n\tPROFILE        : on\n\tPYTHON3        : on\n\tQUOTAS         : on\n\tSYSLOG         : on\n\tTEST           : off\n\tUTMP           : on\n\tZEROCONF_NONE  : off\nShared Libs required:\n\t{DOMAIN}.13\n\t{DOMAIN}.3\n\t{DOMAIN}.3\n\t{DOMAIN}.7\n\t{DOMAIN}.5\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.30\n\t{DOMAIN}.76\n\t{DOMAIN}.76\n\t{DOMAIN}.4\n\t{DOMAIN}.2\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.9\n\t{DOMAIN}.6\n\t{DOMAIN}.6\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.1.0\n\t{DOMAIN}.8\n\t{DOMAIN}.1\n\t{DOMAIN}.2\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.3\n\t{DOMAIN}.9\n\t{DOMAIN}.6\nShared Libs provided:\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\nAnnotations    :\n\tFreeBSD_version: 1500068\n\tbuild_timestamp: 2026-07-12T04:58:19+0000\n\tbuilt_by       : poudriere-git-3.4.8\n\tcpe            : cpe:2.3:a:samba:samba:4.23.8:::::freebsd15:x64:1\n\tport_checkout_unclean: no\n\tport_git_hash  : e9e40e40c5d926e4d17c156665b69e8073cc863b\n\tports_top_checkout_unclean: no\n\tports_top_git_hash: 35f6f54f830de15627094c9b70107c1b637c3ce5\n\trepo_type      : binary\n\trepository     : FreeBSD-ports\nFlat size      : 90.8MiB\nDescription    :\nSamba4 is an attempt to implement an Active Directory compatible Domain\nController.\n\nIn short, you can join a WinNT, Win2000, WinXP or Win 2003 - 2016 member\nserver to a Samba4 domain, and it will behave much as it does in AD,\nincluding Kerberos domain logins where applicable.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--shares"
+      ],
+      "stdout": "\nService      pid     Machine       Connected at                     Encryption   Signing     \n---------------------------------------------------------------------------------------------\n\n",
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--locks"
+      ],
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n{PATH_7}/{DOMAIN} not initialised\nThis is normal if an SMB client has never connected to your server.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "query",
+        "%n-%v",
+        "cups"
+      ],
+      "stdout": "cups-2.4.19_1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/cupsd",
+      "arguments": [
+        "-t"
+      ],
+      "stdout": "\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/lpstat",
+      "arguments": [
+        "-p"
+      ],
+      "stderr": "lpstat: Scheduler is not running.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/lpstat: exit status 1"
+    },
+    {
+      "executable": "/usr/local/bin/lpstat",
+      "arguments": [
+        "-v"
+      ],
+      "stderr": "lpstat: Scheduler is not running.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/lpstat: exit status 1"
+    },
+    {
+      "executable": "/usr/local/sbin/smbd",
+      "arguments": [
+        "-V"
+      ],
+      "stdout": "Version 4.23.8\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "query",
+        "%n-%v",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/pkg",
+      "arguments": [
+        "info",
+        "samba423"
+      ],
+      "stdout": "samba423-4.23.8_1\nName           : samba423\nVersion        : 4.23.8_1\nInstalled on   : Sun Jul 12 {IPV6} 2026 -03\nOrigin         : net{PATH_3}\nArchitecture   : FreeBSD:15:amd64\nPrefix         : /usr/local\nCategories     : net\nLicenses       : GPLv3+\nMaintainer     : samba@{DOMAIN}\nWWW            : https://{DOMAIN}{PATH_4}/\nComment        : Free SMB{PATH_5} and AD{PATH_6} server and client for Unix\nOptions        :\n\tADS            : on\n\tAD_DC          : on\n\tAVAHI          : on\n\tBUNDLED_CMOCKA : off\n\tBUNDLED_TALLOC : off\n\tBUNDLED_TDB    : off\n\tBUNDLED_TEVENT : off\n\tCLUSTER        : off\n\tCUPS           : off\n\tDEVELOPER      : off\n\tDOCS           : on\n\tFAM            : on\n\tFRUIT          : on\n\tGLUSTERFS      : off\n\tGPGME          : off\n\tGSSAPI_BUILTIN : on\n\tGSSAPI_MIT     : off\n\tLDAP           : on\n\tMANPAGES       : on\n\tMDNSRESPONDER  : off\n\tMEMORY_DEBUG   : off\n\tPROFILE        : on\n\tPYTHON3        : on\n\tQUOTAS         : on\n\tSYSLOG         : on\n\tTEST           : off\n\tUTMP           : on\n\tZEROCONF_NONE  : off\nShared Libs required:\n\t{DOMAIN}.13\n\t{DOMAIN}.3\n\t{DOMAIN}.3\n\t{DOMAIN}.7\n\t{DOMAIN}.5\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.30\n\t{DOMAIN}.76\n\t{DOMAIN}.76\n\t{DOMAIN}.4\n\t{DOMAIN}.2\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.9\n\t{DOMAIN}.6\n\t{DOMAIN}.6\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.1.0\n\t{DOMAIN}.8\n\t{DOMAIN}.1\n\t{DOMAIN}.2\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.3\n\t{DOMAIN}.9\n\t{DOMAIN}.6\nShared Libs provided:\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.6\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.1\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.0\n\t{DOMAIN}.2\n\t{DOMAIN}.0\n\t{DOMAIN}.0\nAnnotations    :\n\tFreeBSD_version: 1500068\n\tbuild_timestamp: 2026-07-12T04:58:19+0000\n\tbuilt_by       : poudriere-git-3.4.8\n\tcpe            : cpe:2.3:a:samba:samba:4.23.8:::::freebsd15:x64:1\n\tport_checkout_unclean: no\n\tport_git_hash  : e9e40e40c5d926e4d17c156665b69e8073cc863b\n\tports_top_checkout_unclean: no\n\tports_top_git_hash: 35f6f54f830de15627094c9b70107c1b637c3ce5\n\trepo_type      : binary\n\trepository     : FreeBSD-ports\nFlat size      : 90.8MiB\nDescription    :\nSamba4 is an attempt to implement an Active Directory compatible Domain\nController.\n\nIn short, you can join a WinNT, Win2000, WinXP or Win 2003 - 2016 member\nserver to a Samba4 domain, and it will behave much as it does in AD,\nincluding Kerberos domain logins where applicable.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--shares"
+      ],
+      "stdout": "\nService      pid     Machine       Connected at                     Encryption   Signing     \n---------------------------------------------------------------------------------------------\n\n",
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/smbstatus",
+      "arguments": [
+        "--locks"
+      ],
+      "stderr": "Can't load /usr/local/etc/{DOMAIN} - run testparm to debug it\n{PATH_7}/{DOMAIN} not initialised\nThis is normal if an SMB client has never connected to your server.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/bin/cat",
+      "arguments": [
+        "/etc/fstab"
+      ],
+      "stdout": "# Device\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/vtbd0s1a\t/\t\tufs\trw\t1\t1\n/dev/vtbd0s1b\tnone\t\tswap\tsw\t0\t0\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/sbin/cupsd",
+      "arguments": [
+        "-t"
+      ],
+      "stdout": "\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n\"/usr/local/etc/cups/{DOMAIN}\" is OK.\n",
+      "exitCode": 0
+    },
+    {
+      "executable": "/usr/local/bin/testparm",
+      "arguments": [
+        "-s"
+      ],
+      "stderr": "Load smb config files from /usr/local/etc/{DOMAIN}\nError loading services.\n",
+      "exitCode": 1,
+      "error": "/usr/local/bin/testparm: exit status 1"
+    }
+  ]
+}

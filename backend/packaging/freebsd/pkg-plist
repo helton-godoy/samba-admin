@@ -1,0 +1,10 @@
+sbin/samba-admin-api
+sbin/samba-admin-agent
+libexec/samba-admin-api-wrapper
+libexec/samba-admin-agent-wrapper
+etc/rc.d/samba_admin_api
+etc/rc.d/samba_admin_agent
+etc/newsyslog.conf.d/samba-admin.conf
+etc/samba-admin/api.env.sample
+etc/samba-admin/agent.env.sample
+etc/samba-admin/shared.env.sample

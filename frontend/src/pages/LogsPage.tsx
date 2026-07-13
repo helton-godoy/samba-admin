@@ -1,0 +1,14 @@
+import { Send, ShieldCheck } from 'lucide-react';
+import { READ_ONLY_RELEASE_REASON, useCapabilityGate } from '../capabilities';
+import { PageHeader } from '../components/PageHeader';
+import { Panel } from '../components/Panel';
+import { StatusBadge } from '../components/StatusBadge';
+export function LogsPage(){const tlsCapability=useCapabilityGate('syslog.tls');const disabledReason=`${READ_ONLY_RELEASE_REASON} ${tlsCapability.reason}`;return <>
+  <PageHeader title="Logs e SIEM" description="Coleta local, retenção, rotação e encaminhamento remoto compatível com RFC 5424." />
+  <Panel title="Fontes de log" subtitle="Cada origem pode usar severidade, retenção e política de privacidade próprias"><div className="check-grid">{['FreeBSD/syslog','Samba/smbd','Winbind','Kerberos','CUPS','vfs_full_audit','Interface administrativa'].map((x)=><div className="check-card" key={x}><StatusBadge state="suportado"/><strong>{x}</strong><p>Coleta local ativa; conteúdo sensível excluído por política.</p></div>)}</div></Panel>
+  <Panel title="Encaminhamento remoto" subtitle="TLS pode depender de syslog-ng, rsyslog ou agente adicional no FreeBSD">
+    <fieldset disabled><div className="form-grid"><label>Destino institucional<input placeholder="Parâmetro obrigatório de release"/></label><label>Porta<input type="number" placeholder="Porta definida pela instituição"/></label><label>Protocolo<select><option>TCP + TLS</option><option>TCP</option><option>UDP</option></select></label><label>Formato<select><option>RFC 5424</option><option>RFC 3164</option><option>JSON estruturado</option></select></label><label>Certificado CA<input placeholder="Caminho definido pela instituição"/></label><label>Fila local<select><option>Persistente em disco</option><option>Somente memória</option></select></label><label>Em indisponibilidade<select><option>Enfileirar e alertar</option><option>Descartar baixa severidade</option></select></label><label>Severidade mínima<select><option>info</option><option>notice</option><option>warning</option></select></label></div></fieldset>
+    <div className="alert alert-info"><ShieldCheck size={18}/> Certificados e chaves privadas não são exibidos; destino e certificado são parâmetros obrigatórios de release.</div><div className="alert alert-warning"><strong>Syslog TLS real bloqueado.</strong> {disabledReason}</div><button className="button" disabled title={disabledReason}><Send size={16}/> Testar envio</button>
+  </Panel>
+  <Panel title="Rotação e retenção" subtitle="Estimativa conservadora para ambiente auditável"><div className="impact-grid"><div><span>Retenção local</span><strong>30 dias</strong></div><div><span>Compressão</span><strong>Após 1 dia</strong></div><div><span>Volume estimado</span><strong>18 GiB/mês</strong></div><div><span>Estado SIEM</span><StatusBadge state="atencao"/></div></div></Panel>
+</>}

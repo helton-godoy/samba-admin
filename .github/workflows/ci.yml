@@ -1,0 +1,272 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  openapi:
+    name: OpenAPI contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install contract toolchain
+        working-directory: frontend
+        run: npm ci
+      - name: Validate specification
+        run: make openapi-validate
+      - name: Generate contracts
+        run: make generate
+      - name: Reject generated changes not committed
+        run: git diff --exit-code -- backend/api/generated frontend/src/api/generated/openapi.ts
+      - name: Reject stale generated code
+        run: make check-generated
+
+  openapi-breaking-change:
+    name: OpenAPI compatibility
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+      - name: Materialize the base contract
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          git show FETCH_HEAD:backend/api/openapi.yaml > /tmp/openapi-base.yaml
+      - name: Check breaking changes
+        run: go run github.com/oasdiff/oasdiff@v1.11.7 breaking --fail-on ERR /tmp/openapi-base.yaml backend/api/openapi.yaml
+
+  backend:
+    name: Go quality and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+      - name: Install native build dependencies
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends libsqlite3-dev libargon2-dev
+      - name: Vet
+        working-directory: backend
+        run: go vet ./...
+      - name: Test
+        working-directory: backend
+        run: go test -covermode=atomic -coverprofile=coverage.out ./...
+      - name: Race detector
+        working-directory: backend
+        run: go test -race ./...
+      - name: Static analysis
+        working-directory: backend
+        run: go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
+      - name: Vulnerability scan
+        working-directory: backend
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
+      - name: Build API and agent
+        working-directory: backend
+        run: make build build-tools
+      - uses: actions/upload-artifact@v4
+        with:
+          name: go-coverage
+          path: backend/coverage.out
+          if-no-files-found: error
+
+  frontend:
+    name: Front-end unit and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Unit tests
+        working-directory: frontend
+        run: npm run test
+      - name: Production build
+        working-directory: frontend
+        run: npm run build
+      - name: Empacotar frontend-dist reproduzível
+        run: |
+          SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)" ./scripts/package-frontend-dist.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: |
+            artifacts/frontend-dist.tar.gz
+            artifacts/frontend-dist.SHA256
+          if-no-files-found: error
+
+  frontend-e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Install Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        working-directory: frontend
+        run: npm run test:e2e
+      - name: Upload Playwright evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report
+          if-no-files-found: warn
+
+  frontend-e2e-real:
+    name: Playwright E2E com API Go real
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Instalar dependências nativas
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends libsqlite3-dev libargon2-dev
+      - name: Instalar dependências do front-end
+        working-directory: frontend
+        run: npm ci
+      - name: Instalar Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Gerar credenciais efêmeras protegidas
+        shell: bash
+        run: |
+          set -euo pipefail
+          password="$(openssl rand -base64 36 | tr -d '\n')"
+          totp_secret="$(head -c 20 /dev/urandom | base32 | tr -d '=\n')"
+          echo "::add-mask::$password"
+          echo "::add-mask::$totp_secret"
+          printf 'SAMBA_ADMIN_E2E_PASSWORD=%s\n' "$password" >> "$GITHUB_ENV"
+          printf 'SAMBA_ADMIN_E2E_TOTP_SECRET=%s\n' "$totp_secret" >> "$GITHUB_ENV"
+      - name: Executar navegador contra API e agente reais
+        working-directory: frontend
+        env:
+          GOTOOLCHAIN: local
+        run: npm run test:e2e:real
+      - name: Verificar e sanear artefatos E2E
+        id: artifacts
+        if: ${{ always() }}
+        run: ./scripts/check-e2e-artifacts.sh
+      - name: Publicar relatório E2E sanitizado
+        if: ${{ always() && steps.artifacts.outputs.safe == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-real
+          path: frontend/playwright-report-real
+          if-no-files-found: warn
+
+  security-and-sbom:
+    name: Dependency, secret and SBOM checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install front-end dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Audit production dependencies
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high
+      - name: Detect committed secrets
+        uses: gitleaks/gitleaks-action@v2
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          artifact-name: samba-admin-sbom
+
+  freebsd:
+    name: FreeBSD 15.1 native build and package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test and package in FreeBSD
+        uses: vmactions/freebsd-vm@v1.5.0
+        with:
+          release: '15.1'
+          usesh: true
+          prepare: pkg install -y go126 sqlite3 libargon2 curl
+          run: |
+            set -eu
+            cd backend
+            env GOTOOLCHAIN=local go126 test ./...
+            make GO=go126 build build-tools
+            make -C packaging/freebsd package
+            set -- packaging/freebsd/packages/*.pkg
+            test "$#" -eq 1
+            package="$1"
+            pkg info -F "$package"
+            tar -tf "$package" | grep -q '^/usr/local/sbin/samba-admin-api$'
+            tar -tf "$package" | grep -q '^/usr/local/sbin/samba-admin-agent$'
+            checksum="$(cat packaging/freebsd/packages/SHA256)"
+            sha256 -c "$checksum" "$package"
+            cd ..
+            mkdir -p artifacts/freebsd-smoke
+            SAMBA_ADMIN_EVIDENCE_ROOT="$PWD/artifacts/freebsd-smoke" ops/freebsd-lab/smoke-package.sh --keep-installed "backend/$package"
+      - name: Upload FreeBSD package
+        uses: actions/upload-artifact@v4
+        with:
+          name: freebsd-package
+          path: |
+            backend/packaging/freebsd/packages/*.pkg
+            backend/packaging/freebsd/packages/SHA256
+            artifacts/freebsd-smoke/**
+          if-no-files-found: error

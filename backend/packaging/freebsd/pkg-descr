@@ -1,0 +1,8 @@
+Samba Admin Suite e um console web com agente privilegiado restrito para
+administracao do Samba no FreeBSD. O pacote instala API e agente como servicos
+separados. O agente permanece desabilitado por padrao e este pacote inicial nao
+habilita mutacoes reais em Samba, ACL, dominio, CUPS ou sistema de arquivos.
+
+O operador deve criar a configuracao a partir dos exemplos, carregar segredos
+pelo processo institucional aprovado e homologar as capabilities do ambiente
+FreeBSD/Samba antes de habilitar qualquer recurso privilegiado.
