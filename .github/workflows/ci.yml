@@ -224,7 +224,7 @@ jobs:
         working-directory: frontend
         run: npm audit --omit=dev --audit-level=high
       - name: Detect committed secrets
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
       - name: Generate CycloneDX SBOM
         uses: anchore/sbom-action@v0
         with:
