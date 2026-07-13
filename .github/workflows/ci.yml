@@ -90,7 +90,7 @@ jobs:
       - name: Build API and agent
         working-directory: backend
         run: make build build-tools
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: go-coverage
           path: backend/coverage.out
@@ -119,7 +119,7 @@ jobs:
       - name: Empacotar frontend-dist reproduzível
         run: |
           SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)" ./scripts/package-frontend-dist.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: frontend-dist
           path: |
@@ -149,7 +149,7 @@ jobs:
         run: npm run test:e2e
       - name: Upload Playwright evidence
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: frontend/playwright-report
@@ -198,7 +198,7 @@ jobs:
         run: ./scripts/check-e2e-artifacts.sh
       - name: Publicar relatório E2E sanitizado
         if: ${{ always() && steps.artifacts.outputs.safe == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-real
           path: frontend/playwright-report-real
@@ -262,7 +262,7 @@ jobs:
             mkdir -p artifacts/freebsd-smoke
             SAMBA_ADMIN_EVIDENCE_ROOT="$PWD/artifacts/freebsd-smoke" ops/freebsd-lab/smoke-package.sh --keep-installed "backend/$package"
       - name: Upload FreeBSD package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: freebsd-package
           path: |
