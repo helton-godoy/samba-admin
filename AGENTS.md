@@ -113,3 +113,9 @@ Jobs paralelos em `.github/workflows/ci.yml`:
 - FreeBSD adapter permanece desabilitado por projeto; não assumir que executa comandos reais
 - Spec OpenAPI é a fonte de verdade do contrato; quebras de compatibilidade exigem aprovação explícita
 - Commits, mensagens de teste e logs devem seguir pt-BR
+
+## Memória operacional e execução de Issues
+
+O GitHub é a fonte de planejamento e continuidade entre sessões. Antes de executar uma Issue, siga `docs/github-project-memory.md` e recupere o contexto com `gh`/`git`. O roadmap detalhado está em `docs/v1-roadmap.md`; o backlog normalizado e as chaves estáveis estão em `.github/project/backlog.tsv`.
+
+Toda Issue do roadmap deve ser tratada como contrato executável: confirme o estado atual no código, respeite dependências e gates, implemente somente o escopo descrito, preserve as invariantes fail-closed e anexe evidências e rollback à Pull Request. O encerramento de uma Issue não muda por si só o estado de uma capability; atualize `docs/current-state.md` quando houver homologação suficiente.
