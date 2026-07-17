@@ -1,0 +1,119 @@
+# Fonte canônica do backlog do GitHub.
+# Formato TSV: code, sprint_number, sprint, milestone, story_points, priority, type, areas, risk, status, dependencies, title.
+# Prioridades ausentes no roadmap original foram normalizadas provisoriamente como P1; GOV mantém os valores explícitos.
+# A matriz de Milestones segue os nomes oficiais do roadmap e resolve as linhas de entrega intermediária inconsistentes.
+code	sprint_number	sprint	milestone	story_points	priority	type	areas	risk	status	dependencies	title
+GOV-001	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	3	P0	type:docs	area:security	risk:medium	status:ready	—	Criar Milestones, labels e GitHub Project
+GOV-002	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	5	P0	type:docs	area:security	risk:medium	status:ready	—	Criar `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md` e licença
+GOV-003	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	3	P1	type:docs	area:security	risk:medium	status:ready	—	Criar templates de Issue e Pull Request
+GOV-004	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	3	P0	type:docs	area:security	risk:medium	status:ready	—	Criar `CODEOWNERS` e política de revisão
+GOV-005	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	5	P0	type:docs	area:security	risk:medium	status:ready	—	Configurar Ruleset da branch `main`
+GOV-006	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	5	P0	type:release	area:security,area:frontend,area:backend,area:freebsd	risk:medium	status:ready	—	Unificar versão do front-end, backend e pacote
+GOV-007	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	3	P0	type:docs	area:security,area:backend	risk:medium	status:ready	—	Decidir e corrigir o module path Go
+GOV-008	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	2	P1	type:release	area:security	risk:medium	status:ready	—	Criar tag imutável `v0.3.5-lab`
+GOV-009	0	Sprint 0 — Governança e baseline verificável	v0.4.0 — Engineering Baseline	5	P0	type:docs	area:security	risk:medium	status:ready	—	Executar a primeira PR completa pela CI
+QLT-001	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	3	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Adicionar `gofmt`, `goimports` e verificação de diff
+QLT-002	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	8	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Configurar `golangci-lint`
+QLT-003	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	8	P1	type:ci	area:frontend	risk:medium	status:blocked	GOV-009	Adicionar ESLint com configuração flat e análise type-aware
+QLT-004	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	5	P1	type:ci	area:frontend	risk:medium	status:blocked	GOV-009	Adicionar regras React, Hooks e acessibilidade JSX
+QLT-005	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	3	P1	type:ci	area:frontend	risk:medium	status:blocked	GOV-009	Configurar Prettier
+QLT-006	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	3	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Adicionar ShellCheck e `shfmt`
+QLT-007	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	5	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Adicionar `actionlint` e `zizmor` para workflows
+QLT-008	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	3	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Adicionar Markdownlint e YAMLlint
+QLT-009	1	Sprint 1 — Linters, formatadores e qualidade estática	v0.4.0 — Engineering Baseline	2	P1	type:ci	area:backend	risk:medium	status:blocked	GOV-009	Criar hooks locais com `pre-commit` ou Lefthook
+CICD-001	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	8	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Executar e corrigir integralmente o workflow existente
+CICD-002	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Separar checks rápidos de PR e checks completos
+CICD-003	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security,area:backend	risk:high	status:blocked	QLT-009	Adicionar CodeQL para Go e JavaScript/TypeScript
+CICD-004	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	3	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Adicionar Dependency Review Action
+CICD-005	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Adicionar OSV-Scanner e Trivy filesystem
+CICD-006	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security,area:backend	risk:high	status:blocked	QLT-009	Adicionar Semgrep com regras Go/TypeScript
+CICD-007	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Fixar GitHub Actions por commit SHA
+CICD-008	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	3	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Configurar OpenSSF Scorecard
+CICD-009	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	3	P1	type:docs	area:security	risk:high	status:blocked	QLT-009	Adicionar análise de licenças
+CICD-010	2	Sprint 2 — CI e segurança de supply chain	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security	risk:high	status:blocked	QLT-009	Publicar resultados SARIF na aba Security
+REL-001	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	3	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Adotar Conventional Commits
+REL-002	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	5	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Configurar Release Please ou equivalente
+REL-003	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	3	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Gerar `CHANGELOG.md` automaticamente
+REL-004	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	5	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Criar workflow de prerelease
+REL-005	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	8	P1	type:release	area:security,area:frontend,area:freebsd	risk:high	status:blocked	CICD-010	Produzir pacote FreeBSD e frontend-dist na mesma release
+REL-006	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	5	P1	type:release	area:security,area:backend,area:freebsd	risk:high	status:blocked	CICD-010	Gerar SBOM separado para Go, npm e pacote final
+REL-007	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	5	P1	type:ci	area:security	risk:high	status:blocked	CICD-010	Gerar attestations de build
+REL-008	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	3	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Criar checksums e assinatura verificável
+REL-009	3	Sprint 3 — Release engineering e CD	v0.5.0 — Verified CI/CD	3	P1	type:release	area:security	risk:high	status:blocked	CICD-010	Preservar artefato anterior para rollback
+FE-001	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	5	P1	type:test	area:frontend	risk:medium	status:blocked	CICD-001	Estabilizar Playwright/MSW em CI
+FE-002	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	8	P1	type:test	area:frontend,area:backend,area:agent	risk:medium	status:blocked	CICD-001	Estabilizar Playwright com API Go e agente fixture
+FE-003	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	8	P1	type:security	area:frontend,area:security	risk:medium	status:blocked	CICD-001	Criar tela de ativação e rotação de MFA
+FE-004	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	5	P1	type:security	area:frontend	risk:medium	status:blocked	CICD-001	Implementar gestão de recovery codes
+FE-005	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	5	P1	type:security	area:frontend	risk:medium	status:blocked	CICD-001	Melhorar expiração, renovação e revogação de sessão
+FE-006	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	5	P1	type:feature	area:frontend	risk:medium	status:blocked	CICD-001	Integrar axe-core para acessibilidade
+FE-007	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	3	P1	type:feature	area:frontend	risk:medium	status:blocked	CICD-001	Implantar budgets de bundle e performance
+FE-008	4	Sprint 4 — Front-end real e E2E	v0.6.0 — Production Front-end	6	P1	type:test	area:frontend	risk:medium	status:blocked	CICD-001	Testar proxy HTTPS em ambiente efêmero
+OBS-001	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	8	P1	type:feature	area:observability	risk:high	status:blocked	FE-002	Endpoint protegido de métricas Prometheus
+OBS-002	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:observability,area:backend,area:agent	risk:high	status:blocked	FE-002	Métricas de API, jobs, locks, agente e autenticação
+OBS-003	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	8	P1	type:feature	area:observability	risk:high	status:blocked	FE-002	Exportação de eventos RFC 5424
+OBS-004	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	8	P1	type:security	area:observability,area:security	risk:high	status:blocked	FE-002	TLS para encaminhamento ao SIEM
+OBS-005	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:observability,area:backend	risk:high	status:blocked	FE-002	Backup online e restauração testada do SQLite
+OBS-006	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	5	P1	type:security	area:observability	risk:high	status:blocked	FE-002	Rate limiting específico para login e TOTP
+OBS-007	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	3	P1	type:test	area:observability,area:agent	risk:high	status:blocked	FE-002	Testes de indisponibilidade do agente e banco bloqueado
+OBS-008	5	Sprint 5 — Observabilidade, resiliência e hardening	v0.7.0 — FreeBSD Read-only	3	P1	type:docs	area:observability	risk:high	status:blocked	FE-002	Runbooks de incidente e recuperação
+BSD-001	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:freebsd	risk:medium	status:blocked	OBS-007	Completar inventário de sistema e rede
+BSD-002	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	8	P1	type:feature	area:freebsd	risk:medium	status:blocked	OBS-007	Completar inventário de UFS2, mounts e `fstab`
+BSD-003	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	8	P1	type:feature	area:freebsd,area:samba	risk:medium	status:blocked	OBS-007	Transformar `/shares` em inventário Samba real
+BSD-004	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:freebsd	risk:medium	status:blocked	OBS-007	Inventariar sessões e arquivos abertos
+BSD-005	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:freebsd	risk:medium	status:blocked	OBS-007	Inventariar serviços rc.d
+BSD-006	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	5	P1	type:feature	area:freebsd	risk:medium	status:blocked	OBS-007	Inventariar quotas em modo leitura
+BSD-007	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	8	P1	type:feature	area:freebsd,area:acl	risk:medium	status:blocked	OBS-007	Implementar parser inicial de ACL NFSv4 somente leitura
+BSD-008	6	Sprint 6 — Inventário FreeBSD completo	v0.7.0 — FreeBSD Read-only	6	P1	type:test	area:freebsd	risk:medium	status:blocked	OBS-007	Ampliar fixtures sanitizadas e testes de replay
+AD-001	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	5	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Diagnóstico DNS e registros SRV
+AD-002	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	3	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Diagnóstico de sincronização de horário
+AD-003	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	8	P1	type:test	area:ad,area:security	risk:high	status:blocked	BSD-008	Teste Kerberos sem armazenar credencial
+AD-004	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	8	P1	type:security	area:ad,area:security	risk:high	status:blocked	BSD-008	Diagnóstico LDAP/LDAPS/StartTLS
+AD-005	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	5	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Diagnóstico SMB e controladores preferenciais
+AD-006	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	5	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Diagnóstico Winbind
+AD-007	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	5	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Validação de `idmap_rid`
+AD-008	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	8	P1	type:feature	area:ad	risk:high	status:blocked	BSD-008	Validação de `idmap_ad` e RFC2307
+AD-009	7	Sprint 7 — Diagnóstico de membro do Active Directory	v0.8.0 — AD Member Diagnostics	8	P1	type:feature	area:ad,area:frontend	risk:high	status:blocked	BSD-008	Assistente de pré-requisitos no front-end
+SMB-001	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	8	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Gerador estruturado de configuração Samba
+SMB-002	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	5	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Validação real com `testparm`
+SMB-003	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	8	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Escrita atômica em arquivo temporário
+SMB-004	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	5	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Backup versionado da configuração
+SMB-005	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	8	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Aplicação e reload controlado
+SMB-006	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	5	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Health check após reload
+SMB-007	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	8	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Rollback automático
+SMB-008	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	5	P1	type:feature	area:samba	risk:critical	status:blocked	AD-009	Impacto por sessões e arquivos abertos
+SMB-009	8	Sprint 8 — Primeira mutação: compartilhamentos Samba	v0.9.0 — Safe Samba Mutations	8	P1	type:security	area:samba,area:agent,area:security	risk:critical	status:blocked	AD-009	Atestação de aprovação validada pelo agente
+ACL-001	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Parser completo de ACE NFSv4
+ACL-002	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Ordem canônica de ACEs
+ACL-003	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Flags de herança
+ACL-004	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl,area:ad	risk:critical	status:blocked	SMB-009,AD-008	Resolução de identidades AD/local
+ACL-005	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Cálculo de permissões efetivas
+ACL-006	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Exportação e restauração de ACL
+ACL-007	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Aplicação atômica em um objeto
+ACL-008	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Operação recursiva limitada e assíncrona
+ACL-009	9	Sprint 9 — ACL NFSv4 segura	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:feature	area:acl	risk:critical	status:blocked	SMB-009,AD-008	Comparação com ACL exibida no Windows
+JOIN-001	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Gerar configuração member server
+JOIN-002	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	5	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Selecionar e validar OU do computador
+JOIN-003	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:security	area:ad,area:security	risk:critical	status:blocked	AD-009,SMB-009	Coletar credencial somente em memória
+JOIN-004	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Executar ingresso com timeout e redaction
+JOIN-005	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	5	P1	type:test	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Executar `testjoin` e testes Winbind
+JOIN-006	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	5	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Validar usuários e grupos
+JOIN-007	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Implementar rollback de ingresso falho
+JOIN-008	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	8	P1	type:security	area:ad	risk:critical	status:blocked	AD-009,SMB-009	Implementar saída controlada do domínio
+JOIN-009	10	Sprint 10 — Ingresso controlado como membro do domínio	v0.9.5 — NFSv4 ACL and Domain Join	5	P1	type:security	area:ad,area:security	risk:critical	status:blocked	AD-009,SMB-009	Exigir dupla aprovação
+SEC-001	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	5	P1	type:test	area:security	risk:high	status:blocked	ACL-009,JOIN-009	OWASP ZAP baseline em cada RC
+SEC-002	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	8	P1	type:test	area:security	risk:high	status:blocked	ACL-009,JOIN-009	OWASP ZAP full scan em homologação isolada
+SEC-003	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	8	P1	type:test	area:security,area:agent	risk:high	status:blocked	ACL-009,JOIN-009	Fuzzing contínuo do agente e parsers
+SEC-004	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	5	P1	type:test	area:security	risk:high	status:blocked	ACL-009,JOIN-009	Testes de carga e concorrência
+SEC-005	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	8	P1	type:test	area:security	risk:high	status:blocked	ACL-009,JOIN-009	Pentest manual orientado a risco
+SEC-006	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	5	P1	type:test	area:security	risk:high	status:blocked	ACL-009,JOIN-009	Teste de recuperação de desastre
+SEC-007	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	3	P1	type:security	area:security	risk:high	status:blocked	ACL-009,JOIN-009	Revisão de threat model
+SEC-008	11	Sprint 11 — Segurança dinâmica e homologação	v1.0.0 — Stable	8	P1	type:security	area:security	risk:high	status:blocked	ACL-009,JOIN-009	Correção dos achados
+STB-001	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	2	P1	type:release	area:security	risk:high	status:blocked	SEC-008	Congelamento funcional
+STB-002	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	8	P1	type:release	area:security	risk:high	status:blocked	SEC-008	Resolver todos os defeitos P0 e P1
+STB-003	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	8	P1	type:test	area:security,area:freebsd,area:ad	risk:high	status:blocked	SEC-008	Homologação FreeBSD + AD + Windows 11
+STB-004	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	5	P1	type:docs	area:security	risk:high	status:blocked	SEC-008	Manual do administrador
+STB-005	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	5	P1	type:docs	area:security	risk:high	status:blocked	SEC-008	Runbook de instalação, upgrade e rollback
+STB-006	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	3	P1	type:release	area:security	risk:high	status:blocked	SEC-008	Release notes e matriz de compatibilidade
+STB-007	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	5	P1	type:release	area:security	risk:high	status:blocked	SEC-008	Gerar artefatos finais assinados
+STB-008	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	5	P1	type:test	area:security	risk:high	status:blocked	SEC-008	Testar instalação limpa e upgrade
+STB-009	12	Sprint 12 — Release estável `v1.0.0`	v1.0.0 — Stable	3	P1	type:release	area:security	risk:high	status:blocked	SEC-008	Aprovação formal de produção
